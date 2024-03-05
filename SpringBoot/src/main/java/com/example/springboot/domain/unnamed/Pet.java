@@ -1,4 +1,4 @@
-package com.example.springboot.domain;
+package com.example.springboot.domain.unnamed;
 
 import java.util.Objects;
 
