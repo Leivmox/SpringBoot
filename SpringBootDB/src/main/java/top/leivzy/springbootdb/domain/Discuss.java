@@ -1,10 +1,22 @@
 package top.leivzy.springbootdb.domain;
 
-public class Commit {
-   private Integer id;
-   private String content;
-   private String author;
-   private Integer aId;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
+@Entity(name = "t_comment")
+
+
+public class Discuss {
+    @Id
+    @GeneratedValue
+    private Integer id;
+    private String content;
+    private String author;
+    @Column(name="a_id")
+
+    private Integer aId;
 
     public Integer getId() {
         return id;
