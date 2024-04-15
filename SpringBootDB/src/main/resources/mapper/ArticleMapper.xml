@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper>
+    <select id="selectArticle" resultMap="articleWithComment">
+        SELECT a.*, c.id c_id, c.content c_content, c.author
+        FROM t_article a,
+             t_comment c
+        WHERE a.id = c.a_id
+          AND a.id = #{id}
+    </select>
+    <resultMap id="articleWithCommnet" type="Article">
+        <id property="id" column="id"></id>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <collection property="content" column="content">
+            <id property="id" column="c_id"/>
+            <result property="content" column="c_contnet"/>
+            <result property="author" column="author"/>
+        </collection>
+    </resultMap>
+
+    <update id="updateArticle" parameterType="Article">
+    UPDATE t_artcle
+    <set>
+        <if test="title !=null and content !=''">
+            content=#{content}
+        </if>
+        <if test="content">
+            !=null and content !=''">
+            content=#{content}
+        </if>
+    </set>
+    WHERE id=#{id}
+    </update>
+</mapper>
