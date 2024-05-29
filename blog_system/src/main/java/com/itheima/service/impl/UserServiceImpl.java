@@ -31,7 +31,7 @@ public class UserServiceImpl implements IUserService {
         user.setValid(true);
 
         Set<UserAuthority> authorities = new HashSet<>();
-        authorities.add(new UserAuthority(user, 1)); // 使用整数值表示权限
+        authorities.add(new UserAuthority(user, 2)); // 使用整数值表示权限
         user.setAuthorities(authorities);
 
         userRepository.save(user);
