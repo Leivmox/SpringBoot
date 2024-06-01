@@ -49,9 +49,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated();
         // 2、自定义用户登录控制
         http.formLogin()
-                .loginPage("/login")
-                .usernameParameter("username").passwordParameter("password")
-                .successHandler(new AuthenticationSuccessHandler() {
+                .loginPage("/login") // 设置自定义的登录页面路径。当用户未登录访问受保护的资源时，重定向到这个路径。
+                .usernameParameter("username") // 设置登录表单中用户名输入框的参数名，默认为 "username"。
+                .passwordParameter("password") // 设置登录表单中密码输入框的参数名，默认为 "password"。
+                .successHandler(new AuthenticationSuccessHandler() { // 配置登录成功后的处理逻辑。
                     @Override
                     public void onAuthenticationSuccess(HttpServletRequest httpServletRequest,HttpServletResponse httpServletResponse, Authentication authentication) throws IOException, ServletException {
                         String url = httpServletRequest.getParameter("url");
