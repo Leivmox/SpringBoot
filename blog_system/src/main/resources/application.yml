@@ -11,6 +11,7 @@ spring:
   # 配置国际化资源文件
   messages:
     basename: i18n.logo
+    encoding: UTF-8
 
 # MyBatis配置
 mybatis:

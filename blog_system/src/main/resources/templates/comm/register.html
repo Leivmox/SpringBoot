@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport"
           content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <title>注册博客</title>
+    <title th:text="#{register.title}">注册博客</title>
 
     <meta http-equiv="Cache-Control" content="no-siteapp"/>
     <link rel="shortcut icon" th:href="@{/user/img/bloglogo.jpg}"/>
@@ -14,6 +14,25 @@
     <script th:src="@{/assets/js/amazeui.min.js}"></script>
     <link rel="stylesheet" th:href="@{/assets/css/amazeui.min.css}"/>
     <link rel="stylesheet" th:href="@{/assets/css/app.css}"/>
+    <style>
+        .lang-switch a {
+            color: #ffffff;
+            text-decoration: none;
+            margin: 0 5px;
+        }
+
+        .lang-switch a:hover {
+            text-decoration: underline;
+        }
+
+        .blur-container {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+    </style>
 </head>
 
 <body>
@@ -21,48 +40,60 @@
 <div class="log">
     <div class="am-g">
         <div class="am-u-lg-3 am-u-md-6 am-u-sm-8 am-u-sm-centered log-content">
-            <h1 class="log-title am-animation-slide-top" style="color: black;">注册</h1>
-            <br>
-            <div th:if="${error}" style="color: red;">
-                <p th:text="${error}"></p>
+            <div class="blur-container">
+                <h1 class="log-title am-animation-slide-top" style="color: #000000;" th:text="#{register.title}">注册</h1>
+                <br>
+                <div th:if="${error}" style="color: red;">
+                    <p th:text="${error}"></p>
+                </div>
+                <form class="am-form" id="registerForm" th:action="@{/register}" method="post">
+                    <div class="am-input-group am-radius am-animation-slide-left">
+                        <input type="text" class="am-radius" th:placeholder="#{register.username}" name="username"
+                               required>
+                        <span class="am-input-group-label log-icon am-radius">
+                            <i class="am-icon-user am-icon-sm am-icon-fw"></i>
+                        </span>
+                    </div>
+                    <br>
+                    <div class="am-input-group am-animation-slide-left log-animation-delay">
+                        <input type="password" class="am-form-field am-radius log-input"
+                               th:placeholder="#{register.password}" name="password" required>
+                        <span class="am-input-group-label log-icon am-radius">
+                            <i class="am-icon-lock am-icon-sm am-icon-fw"></i>
+                        </span>
+                    </div>
+                    <br>
+                    <div class="am-input-group am-animation-slide-left log-animation-delay">
+                        <input type="email" class="am-form-field am-radius log-input" th:placeholder="#{register.email}"
+                               name="email" required>
+                        <span class="am-input-group-label log-icon am-radius">
+                            <i class="am-icon-envelope am-icon-sm am-icon-fw"></i>
+                        </span>
+                    </div>
+                    <div style="padding-top: 10px;">
+                        <input type="submit" th:value="#{register.sub}"
+                               class="am-btn am-btn-primary am-btn-block am-btn-lg am-radius am-animation-slide-bottom log-animation-delay"/>
+                    </div>
+                    <!-- 登录链接（添加的） -->
+                    <div style="padding-top: 10px;">
+                        <a th:href="@{/login}"
+                           class="am-btn am-btn-primary am-btn-block am-btn-lg am-radius am-animation-slide-bottom log-animation-delay"
+                           th:text="#{register.login}">没有账号？点击注册</a>
+                    </div>
+                </form>
+                <br>
+                <!-- 语言切换链接 -->
+                <div class="lang-switch" style="text-align: center;">
+                    <a href="?lang=zh_CN">中文</a> / <a href="?lang=en_US">English</a>
+                </div>
             </div>
-            <form class="am-form" id="registerForm" th:action="@{/register}" method="post">
-                <div class="am-input-group am-radius am-animation-slide-left">
-                    <input type="text" class="am-radius" placeholder="用户名" name="username" required>
-                    <span class="am-input-group-label log-icon am-radius">
-                        <i class="am-icon-user am-icon-sm am-icon-fw"></i>
-                    </span>
-                </div>
-                <br>
-                <div class="am-input-group am-animation-slide-left log-animation-delay">
-                    <input type="password" class="am-form-field am-radius log-input" placeholder="密码" name="password" required>
-                    <span class="am-input-group-label log-icon am-radius">
-                        <i class="am-icon-lock am-icon-sm am-icon-fw"></i>
-                    </span>
-                </div>
-                <br>
-                <div class="am-input-group am-animation-slide-left log-animation-delay">
-                    <input type="email" class="am-form-field am-radius log-input" placeholder="邮箱" name="email" required>
-                    <span class="am-input-group-label log-icon am-radius">
-                        <i class="am-icon-envelope am-icon-sm am-icon-fw"></i>
-                    </span>
-                </div>
-                <div style="padding-top: 10px;">
-                    <input type="submit" value="注册"
-                           class="am-btn am-btn-primary am-btn-block am-btn-lg am-radius am-animation-slide-bottom log-animation-delay"/>
-                </div>
-                <!-- 登录链接（添加的） -->
-                <div style="padding-top: 10px;">
-                    <a th:href="@{/login}" class="am-btn am-btn-primary am-btn-block am-btn-lg am-radius am-animation-slide-bottom log-animation-delay">
-                        已有账号？点击登录
-                    </a>
-                </div>
-            </form>
         </div>
     </div>
 
     <footer class="log-footer">
-        <p style="margin: 30px; color: #2E2D3C"><time class="comment-time" th:text="${#dates.format(new java.util.Date().getTime(), 'yyyy')}"></time> &copy; Powered By <a style="color: #0e90d2" rel="nofollow">CrazyStone</a></p>
+        <p style="margin: 30px; color: #b2b2b2">
+            <time class="comment-time" th:text="${#dates.format(new java.util.Date().getTime(), 'yyyy')}"></time> &copy;
+            Powered By <a style="color: #0e90d2" rel="nofollow">CrazyStone</a></p>
     </footer>
 </div>
 </body>
