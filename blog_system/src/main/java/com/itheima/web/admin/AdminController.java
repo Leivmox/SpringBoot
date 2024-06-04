@@ -112,6 +112,13 @@ public class AdminController {
             return ArticleResponseData.fail();
         }
     }
+    // 向文章预览页面跳转
+    @GetMapping(value = "/article/preview/{id}")
+    @ResponseBody
+    public Article previewArticle(@PathVariable("id") int id) {
+        Article article = articleServiceImpl.selectArticleWithId(id);
+        return article;
+    }
 
 
 
