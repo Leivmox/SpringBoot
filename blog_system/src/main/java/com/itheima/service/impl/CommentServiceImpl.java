@@ -45,5 +45,11 @@ public class CommentServiceImpl implements ICommentService {
         statisticMapper.updateArticleCommentsWithId(statistic);
     }
 
+    @Override
+    public int deleteComments(Integer id) {
+
+        return commentMapper.deleteCommentWithCId(id);
+    }
+
 }
 

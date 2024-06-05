@@ -15,5 +15,6 @@ public interface ICommentService {
     // 用户发表评论
     public void pushComment(Comment comment);
 
+    int deleteComments(Integer id);
 }
 

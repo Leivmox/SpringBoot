@@ -2,7 +2,10 @@ package com.itheima.service;
 
 import com.github.pagehelper.PageInfo;
 import com.itheima.model.domain.Article;
+import com.itheima.model.domain.Category;
+
 import java.util.List;
+
 /**
  * @Classname IArticleService
  * @Description TODO
@@ -28,5 +31,21 @@ public interface IArticleService {
 
     // 根据主键删除文章
     public void deleteArticleWithId(int id);
+    //=============
+    void openAllowCommentByID(int id);
+
+    void closeAllowCommentByID(int id);
+
+//    List<Article> getcategoryArticle();
+
+    List<Category> getcategoryArticle(Integer page, Integer count);
+
+    List<Article> selectArticleWithCategories(String categories);
+
+    List<Category> searchbykeyword(String keyword);
+
+    void deleteArticleWithcategory(String categories);
+
+    List<Article> findByTitleContainingOrContentContaining(String keyword);
 }
 

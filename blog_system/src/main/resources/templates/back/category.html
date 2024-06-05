@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:with="title='文章管理',active='category'">
+<header th:replace="back/header::headerFragment(${title},${active})"></header>
+<head>
+    <meta th:name="_csrf" th:content="${_csrf.token}"/>
+    <!-- 默认的header name是X-CSRF-TOKEN -->
+    <meta th:name="_csrf_header" th:content="${_csrf.headerName}"/>
+</head>
+<body class="fixed-left">
+<div id="wrapper">
+    <div th:replace="back/header::header-body"></div>
+    <div class="content-page">
+        <div class="content">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <h4 class="page-title">分类管理</h4>
+                    </div>
+                        <div class="col-sm-12" style="display: flex;margin-bottom:10px;justify-content: space-between">
+                            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addModal">
+                                新增
+                            </button>
+                            <div style="display:flex">
+                                <input th:name="keywords" type="text" style="width:200px " class="form-control" id="searchInput" placeholder="请输入关键字">
+                                <a id="searchBtn" class="btn btn-primary btn-sm waves-effect waves-light m-b-5">
+                                    <i class="fa fa-search"></i> <span>查询</span>
+                                </a>
+                            </div>
+                        </div>
+                    <div class="col-md-12">
+                        <table class="table table-striped table-bordered">
+                            <thead>
+                            <tr>
+                                <th width="35%">分类</th>
+                                <th>分类数量</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <th:block th:each="category : ${categoryList}">
+                                <tr>
+                                    <td>
+                                        <a th:text="${category.categories}" target="_blank"></a>
+                                    </td>
+                                    <td><a th:href="@{'/admin/category/see/'+${category.categories}}" th:text="${category.categoriesNum}"></a></td>
+                                    <td>
+                                        <a
+                                           data-toggle="modal" data-target="#editModal"
+                                           th:data="${category.categories}"
+                                           class="btn btn-primary btn-sm waves-effect waves-light m-b-5">
+                                            <i class="fa fa-edit"></i> <span>编辑</span></a>
+
+
+
+<!--                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#editModal"-->
+<!--                                                th:data-name="${category.categories}">-->
+<!--                                            编辑-->
+<!--                                        </button>-->
+                                        <a class="btn btn-danger btn-sm waves-effect waves-light m-b-5">
+                                            <i class="fa fa-trash-o"></i> <span>删除</span></a>
+                                    </td>
+                                </tr>
+                            </th:block>
+
+                            </tbody>
+                        </table>
+
+
+
+
+<!--                        <div th:replace="comm/paging :: pageAdminNav(${category})"></div>-->
+                    </div>
+                </div>
+                <div th:replace="back/footer :: footer-content"></div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+    <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addModalLabel">新增分类</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+<!--                            <h1 th:text="${category.categories}"></h1>-->
+                            <label for="categoryName">分类名称</label>
+                            <input type="text" class="form-control" id="category" placeholder="请输入分类名称"
+                                   >
+                        </div>
+                    </form>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" id="ChangesBtn">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">编辑分类</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+<!--                            <h1 th:text="${category.categories}"></h1>-->
+                            <label for="categoryName">分类名称</label>
+                            <input type="text" class="form-control" id="categoryName" placeholder="请输入分类名称">
+                        </div>
+                    </form>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    <button type="button" class="btn btn-primary" id="saveChangesBtn">保存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<div th:replace="back/footer :: footer"></div>
+<script type="text/javascript">
+    function delCategory(categories) {
+        // 获取<meta>标签中封装的_csrf信息
+        var token = $("meta[name='_csrf']").attr("content");
+        var header = $("meta[name='_csrf_header']").attr("content");
+        if(confirm('确定删除该文章吗?')){
+            $.ajax({
+                type:'post',
+                url : '/admin/category/delete',
+                data: {categories:categories},
+                dataType: 'json',
+                beforeSend : function(xhr) {
+                    xhr.setRequestHeader(header, token);
+                },
+                success: function (result) {
+                    if (result && result.success) {
+                        window.alert("文章删除成功");
+                        window.location.reload();
+                    } else {
+                        window.alert(result.msg || '文章删除失败')
+                    }
+                }
+            });
+        }
+    }
+
+    // 获取查询按钮和输入框元素
+    var searchBtn = document.getElementById('searchBtn');
+    var searchInput = document.getElementById('searchInput');
+
+    // 给查询按钮绑定点击事件
+    searchBtn.addEventListener('click', function() {
+        // 获取输入框的值
+        var keywords = searchInput.value;
+        // 构造查询URL
+        var searchUrl = '/admin/category/search?keywords=' + keywords;
+        // 跳转到查询页
+        window.location.href = searchUrl;
+    });
+
+
+    $('#editModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget); // 触发模态框的按钮
+        var categoryName = button.data('name'); // 获取 data-name 属性的值
+        console.log(categoryName); // 输出获取到的值
+    });
+
+
+
+
+
+
+    $('#saveChangesBtn').click(function() {
+        var categoryName = $('#categoryName').val();
+        // var categoryNum = $('#categoryNum').val();
+
+        // 通过 AJAX 将表单数据提交给后端
+        $.ajax({
+            url: '/save-category',
+            type: 'POST',
+            data: {
+                categoryName: categoryName,
+            },
+            success: function(response) {
+                // 如果保存成功，则刷新页面
+                location.reload();
+            },
+            error: function(xhr, status, error) {
+                console.error(error);
+            }
+        });
+    });
+
+
+
+    
+</script>
+</body>
+</html>

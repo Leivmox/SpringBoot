@@ -6,6 +6,7 @@ import com.itheima.dao.ArticleMapper;
 import com.itheima.dao.CommentMapper;
 import com.itheima.dao.StatisticMapper;
 import com.itheima.model.domain.Article;
+import com.itheima.model.domain.Category;
 import com.itheima.model.domain.Statistic;
 import com.itheima.service.IArticleService;
 import com.vdurmont.emoji.EmojiParser;
@@ -24,6 +25,7 @@ import java.util.List;
  * @Date 2019-3-14 9:47
  * @Created by CrazyStone
  */
+
 @Service
 @Transactional
 public class ArticleServiceImpl implements IArticleService {
@@ -48,21 +50,21 @@ public class ArticleServiceImpl implements IArticleService {
             article.setHits(statistic.getHits());
             article.setCommentsNum(statistic.getCommentsNum());
         }
-        PageInfo<Article> pageInfo=new PageInfo<>(articleList);
+        PageInfo<Article> pageInfo = new PageInfo<>(articleList);
         return pageInfo;
     }
 
     // 统计前10的热度文章信息
     @Override
-    public List<Article> getHeatArticles( ) {
+    public List<Article> getHeatArticles() {
         List<Statistic> list = statisticMapper.getStatistic();
-        List<Article> articlelist=new ArrayList<>();
+        List<Article> articlelist = new ArrayList<>();
         for (int i = 0; i < list.size(); i++) {
             Article article = articleMapper.selectArticleWithId(list.get(i).getArticleId());
             article.setHits(list.get(i).getHits());
             article.setCommentsNum(list.get(i).getCommentsNum());
             articlelist.add(article);
-            if(i>=9){
+            if (i >= 9) {
                 break;
             }
         }
@@ -70,20 +72,31 @@ public class ArticleServiceImpl implements IArticleService {
     }
 
     // 根据id查询单个文章详情，并使用Redis进行缓存管理
-    public Article selectArticleWithId(Integer id){
+    @Override
+    public Article selectArticleWithId(Integer id) {
         Article article = null;
         Object o = redisTemplate.opsForValue().get("article_" + id);
-        if(o!=null){
-            article=(Article)o;
-        }else{
+        if (o != null) {
+            article = (Article) o;
+        } else {
             article = articleMapper.selectArticleWithId(id);
-            if(article!=null){
-                redisTemplate.opsForValue().set("article_" + id,article);
+            if (article != null) {
+                redisTemplate.opsForValue().set("article_" + id, article);
             }
         }
         return article;
     }
-
+    // 根据id查询单个文章详情，并使用Redis进行缓存管理
+//    @Override
+//    public Article selectArticleWithId2(Integer id) {
+//        Article article = null;
+//
+//            article = articleMapper.selectArticleWithId(id);
+//            if (article != null) {
+//                redisTemplate.opsForValue().set("article_" + id, article);
+//            }
+//        return article;
+//    }
     // 发布文章
     @Override
     public void publish(Article article) {
@@ -117,5 +130,42 @@ public class ArticleServiceImpl implements IArticleService {
         commentMapper.deleteCommentWithId(id);
     }
 
-}
+    @Override
+    public void openAllowCommentByID(int id) {
+        articleMapper.openAllowCommentByID(id);
+    }
 
+    @Override
+    public void closeAllowCommentByID(int id) {
+        articleMapper.closeAllowCommentByID(id);
+    }
+
+    @Override
+    public List<Category> getcategoryArticle(Integer page, Integer count) {
+        List<Category> categoryList = articleMapper.getCategoryArticle();
+        return categoryList;
+    }
+
+    @Override
+    public List<Article> selectArticleWithCategories(String categories) {
+        List<Article> articleList = articleMapper.selectArticleWithCategories(categories);
+        return articleList;
+    }
+
+    @Override
+    public List<Category> searchbykeyword(String keyword) {
+        List<Category> categoryList = articleMapper.selectCategoryByKeyword(keyword);
+        return categoryList;
+    }
+
+    @Override
+    public void deleteArticleWithcategory(String categories) {
+        articleMapper.deleteArticleWithcategory(categories);
+    }
+
+    @Override
+    public List<Article> findByTitleContainingOrContentContaining(String keyword) {
+        List<Article> articles = articleMapper.findByTitleContainingOrContentContaining(keyword);
+        return articles;
+    }
+}

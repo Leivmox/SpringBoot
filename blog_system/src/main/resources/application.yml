@@ -12,6 +12,9 @@ spring:
   messages:
     basename: i18n.logo
     encoding: UTF-8
+  mvc:
+    locale: zh_CN
+    locale-resolver: fixed
 
 # MyBatis配置
 mybatis:

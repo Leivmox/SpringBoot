@@ -7,6 +7,7 @@ import com.itheima.model.domain.Article;
 import com.itheima.model.domain.Comment;
 import com.itheima.service.IArticleService;
 import com.itheima.service.ISiteService;
+import com.itheima.service.IUserService;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +31,10 @@ public class AdminController {
     private ISiteService siteServiceImpl;
     @Autowired
     private IArticleService articleServiceImpl;
+
+    @Autowired
+    private IUserService userServiceImpl;
+
 
     // 管理中心起始页
     @GetMapping(value = {"", "/index"})
@@ -119,7 +124,48 @@ public class AdminController {
         Article article = articleServiceImpl.selectArticleWithId(id);
         return article;
     }
+    //打开评论
+    @PutMapping("/opencom")
+    @ResponseBody
+    public ArticleResponseData opencom(@RequestParam int id) {
+        try {
+            articleServiceImpl.openAllowCommentByID(id);
+            logger.info("开启成功");
+            return ArticleResponseData.ok();
 
+        } catch (Exception e) {
+            logger.error("开启失败，错误信息: " + e.getMessage());
+            return ArticleResponseData.fail();
+
+        }
+    }
+
+    //关闭评论
+    @PutMapping("/closecom")
+    @ResponseBody
+    public ArticleResponseData closecom(@RequestParam int id) {
+        try {
+            articleServiceImpl.closeAllowCommentByID(id);
+            logger.info("关闭成功");
+            return ArticleResponseData.ok();
+
+        } catch (Exception e) {
+            logger.error("关闭失败，错误信息: " + e.getMessage());
+            return ArticleResponseData.ok();
+        }
+    }
+    // 评论编辑
+    @GetMapping(value = "/comment")
+    public String comment(@RequestParam(value = "page", defaultValue = "1") int page,
+                          @RequestParam(value = "count", defaultValue = "10") int count,
+                          HttpServletRequest request) {
+        PageInfo<Article> pageInfo = articleServiceImpl.selectArticleWithPage(page, count);
+        request.removeAttribute("articles");
+        request.setAttribute("articles", pageInfo);
+//        request.setAttribute("articles.allowComment", 0);
+
+        return "/back/comment_edit";
+    }
 
 
 }

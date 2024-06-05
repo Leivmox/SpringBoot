@@ -1,6 +1,7 @@
 package com.itheima.dao;
 
 import com.itheima.model.domain.Article;
+import com.itheima.model.domain.Category;
 import org.apache.ibatis.annotations.*;
 import java.util.List;
 /**
@@ -15,6 +16,11 @@ public interface ArticleMapper {
     // 根据id查询文章信息
     @Select("SELECT * FROM t_article WHERE id=#{id}")
     public Article selectArticleWithId(Integer id);
+//    @Select("SELECT * FROM t_article WHERE id=#{id}")
+//    public Article selectArticleWithId2(Integer id);
+
+    @Select("SELECT categories ,COUNT(*) AS categoriesNum FROM t_article GROUP BY categories")
+    public List<Category> getCategoryArticle();
 
     // 发表文章，同时使用@Options注解获取自动生成的主键id
     @Insert("INSERT INTO t_article (title,created,modified,tags,categories," +
@@ -38,4 +44,21 @@ public interface ArticleMapper {
 
     // 通过id更新文章
     public Integer updateArticleWithId(Article article);
+    @Update("UPDATE t_article SET allow_comment = 1 WHERE id =#{id}")
+
+
+
+    void openAllowCommentByID(int id);
+    @Update("UPDATE t_article SET allow_comment = 0 WHERE id =#{id}")
+    void closeAllowCommentByID(int id);
+    @Select("SELECT * FROM t_article ORDER BY id DESC")
+    List<Article> selectArticleWithCategories(String categories);
+
+    @Select("SELECT categories ,COUNT(*) AS categoriesNum FROM t_article WHERE categories=#{keyword} GROUP BY categories")
+    List<Category>  selectCategoryByKeyword(String keyword);
+
+    @Update("UPDATE t_article SET categories = '' WHERE categories=#{categories}")
+    Object deleteArticleWithcategory(String categories);
+    @Select("SELECT * FROM t_article WHERE title LIKE CONCAT('%', #{keyword}, '%') OR content LIKE CONCAT('%', #{keyword}, '%')")
+    List<Article> findByTitleContainingOrContentContaining(String keyword);
 }

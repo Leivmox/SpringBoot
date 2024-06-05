@@ -1,7 +1,10 @@
 package com.itheima.web.client;
 
+import com.github.pagehelper.PageInfo;
 import com.itheima.model.ResponseData.ArticleResponseData;
+import com.itheima.model.domain.Article;
 import com.itheima.model.domain.Comment;
+import com.itheima.service.IArticleService;
 import com.itheima.service.ICommentService;
 import com.itheima.utils.MyUtils;
 import com.vdurmont.emoji.EmojiParser;
@@ -11,10 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
@@ -33,6 +33,8 @@ public class CommentController {
     @Autowired
     private ICommentService commentServcieImpl;
 
+    @Autowired
+    private IArticleService articleServiceImpl;
     // 发表评论操作
     @PostMapping(value = "/publish")
     @ResponseBody
@@ -57,6 +59,21 @@ public class CommentController {
             logger.error("发布评论失败，对应文章id: "+aid +";错误描述: "+e.getMessage());
             return ArticleResponseData.fail();
         }
+    }
+    //查看评论
+    @GetMapping(value = "/see/{id}")
+    public String showComment(@PathVariable("id") Integer id,@RequestParam(value = "page", defaultValue = "1") int page,
+                              @RequestParam(value = "count", defaultValue = "10") int count,HttpServletRequest request){
+        PageInfo<Comment> pageInfo = commentServcieImpl.getComments(id,page,count);
+        request.setAttribute("comments", pageInfo);
+        return "/back/comment_list";
+    }
+    @PostMapping(value = "/delete")
+    @ResponseBody
+    public ArticleResponseData deleteComments(@RequestParam int id){
+        int result = commentServcieImpl.deleteComments(id);
+
+        return ArticleResponseData.ok();
     }
 }
 
