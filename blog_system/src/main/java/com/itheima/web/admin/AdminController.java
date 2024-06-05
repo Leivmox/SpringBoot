@@ -5,6 +5,7 @@ import com.itheima.model.ResponseData.ArticleResponseData;
 import com.itheima.model.ResponseData.StaticticsBo;
 import com.itheima.model.domain.Article;
 import com.itheima.model.domain.Comment;
+import com.itheima.model.domain.User;
 import com.itheima.service.IArticleService;
 import com.itheima.service.ISiteService;
 import com.itheima.service.IUserService;
@@ -14,8 +15,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+
 /**
  * @Classname AdminController
  * @Description 后台管理模块
@@ -52,9 +55,10 @@ public class AdminController {
 
     // 向文章发表页面跳转
     @GetMapping(value = "/article/toEditPage")
-    public String newArticle( ) {
+    public String newArticle() {
         return "back/article_edit";
     }
+
     // 发表文章
     @PostMapping(value = "/article/publish")
     @ResponseBody
@@ -67,10 +71,11 @@ public class AdminController {
             logger.info("文章发布成功");
             return ArticleResponseData.ok();
         } catch (Exception e) {
-            logger.error("文章发布失败，错误信息: "+e.getMessage());
+            logger.error("文章发布失败，错误信息: " + e.getMessage());
             return ArticleResponseData.fail();
         }
     }
+
     // 跳转到后台文章列表页面
     @GetMapping(value = "/article")
     public String index(@RequestParam(value = "page", defaultValue = "1") int page,
@@ -99,7 +104,7 @@ public class AdminController {
             logger.info("文章更新成功");
             return ArticleResponseData.ok();
         } catch (Exception e) {
-            logger.error("文章更新失败，错误信息: "+e.getMessage());
+            logger.error("文章更新失败，错误信息: " + e.getMessage());
             return ArticleResponseData.fail();
         }
     }
@@ -113,10 +118,11 @@ public class AdminController {
             logger.info("文章删除成功");
             return ArticleResponseData.ok();
         } catch (Exception e) {
-            logger.error("文章删除失败，错误信息: "+e.getMessage());
+            logger.error("文章删除失败，错误信息: " + e.getMessage());
             return ArticleResponseData.fail();
         }
     }
+
     // 向文章预览页面跳转
     @GetMapping(value = "/article/preview/{id}")
     @ResponseBody
@@ -124,6 +130,7 @@ public class AdminController {
         Article article = articleServiceImpl.selectArticleWithId(id);
         return article;
     }
+
     //打开评论
     @PutMapping("/opencom")
     @ResponseBody
@@ -154,6 +161,7 @@ public class AdminController {
             return ArticleResponseData.ok();
         }
     }
+
     // 评论编辑
     @GetMapping(value = "/comment")
     public String comment(@RequestParam(value = "page", defaultValue = "1") int page,
@@ -167,6 +175,29 @@ public class AdminController {
         return "/back/comment_edit";
     }
 
+    // 用户管理
+    @GetMapping(value = "/setting")
+    public String setting(@RequestParam(value = "page", defaultValue = "1") int page,
+                          @RequestParam(value = "count", defaultValue = "10") int count,
+                          HttpServletRequest request) {
+        PageInfo<User> pageInfo = userServiceImpl.getAllUsers(page, count);
+        request.setAttribute("users", pageInfo);
+        return "back/user_list";
+    }
 
+    // 用户删除
+    @PostMapping("/user/delete")
+    @ResponseBody
+    public ArticleResponseData deleteUser(@RequestParam int id) {
+        try {
+            userServiceImpl.deleteUserById(id);
+            logger.info("用户删除成功");
+            return ArticleResponseData.ok();
+        } catch (Exception e) {
+            logger.error("用户删除失败，错误信息: " + e.getMessage());
+            return ArticleResponseData.fail();
+        }
+    }
 }
+
 

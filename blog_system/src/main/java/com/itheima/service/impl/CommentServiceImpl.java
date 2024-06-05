@@ -45,10 +45,25 @@ public class CommentServiceImpl implements ICommentService {
         statisticMapper.updateArticleCommentsWithId(statistic);
     }
 
-    @Override
+       @Override
     public int deleteComments(Integer id) {
+        // 获取评论信息
+        Comment comment = commentMapper.selectCommentById(id);
+        if (comment == null) {
+            return 0;
+        }
 
-        return commentMapper.deleteCommentWithCId(id);
+        // 删除评论
+        int result = commentMapper.deleteCommentWithCId(id);
+        if (result > 0) {
+            // 更新文章评论数据量
+            Statistic statistic = statisticMapper.selectStatisticWithArticleId(comment.getArticleId());
+            if (statistic != null) {
+                statistic.setCommentsNum(statistic.getCommentsNum() - 1);
+                statisticMapper.updateArticleCommentsWithId(statistic);
+            }
+        }
+        return result;
     }
 
 }

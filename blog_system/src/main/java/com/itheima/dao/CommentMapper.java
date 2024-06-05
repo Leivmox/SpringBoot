@@ -34,6 +34,9 @@ public interface CommentMapper {
     public void deleteCommentWithId(Integer aid);
 
     @Delete("DELETE FROM t_comment WHERE id=#{id}")
-    int deleteCommentWithCId(Integer id);
+    int deleteCommentWithCId(Integer id);    // 根据评论id获取评论信息
+
+    @Select("SELECT * FROM t_comment WHERE id=#{id}")
+    Comment selectCommentById(Integer id);
 }
 

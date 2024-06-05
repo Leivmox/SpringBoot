@@ -1,4 +1,3 @@
-
 package com.itheima.config;
 
 import org.springframework.context.annotation.Bean;
@@ -17,7 +16,7 @@ public class LocaleConfig implements WebMvcConfigurer {
     @Bean
     public LocaleResolver localeResolver() {
         SessionLocaleResolver slr = new SessionLocaleResolver();
-        slr.setDefaultLocale(Locale.US);
+        slr.setDefaultLocale(Locale.SIMPLIFIED_CHINESE); // 设置默认语言为中文
         return slr;
     }
 
