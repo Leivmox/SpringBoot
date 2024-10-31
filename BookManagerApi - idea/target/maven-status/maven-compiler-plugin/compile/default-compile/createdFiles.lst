@@ -2,14 +2,12 @@ com\rabbiter\bms\mapper\BorrowMapper.class
 com\rabbiter\bms\model\BookType.class
 com\rabbiter\bms\web\BorrowController.class
 com\rabbiter\bms\mapper\BookTypeMapper.class
-com\rabbiter\bms\interceptor\ReaderInterceptor.class
 com\rabbiter\bms\service\impl\BookTypeServiceImpl.class
 com\rabbiter\bms\utils\PathUtils.class
 com\rabbiter\bms\service\BorrowService.class
 com\rabbiter\bms\mapper\UserMapper.class
 com\rabbiter\bms\model\Borrow.class
 com\rabbiter\bms\config\CorsConfig.class
-com\rabbiter\bms\interceptor\UserInterceptor.class
 com\rabbiter\bms\web\UserController.class
 com\rabbiter\bms\utils\MyResult$3.class
 com\rabbiter\bms\mapper\BookInfoMapper.class
