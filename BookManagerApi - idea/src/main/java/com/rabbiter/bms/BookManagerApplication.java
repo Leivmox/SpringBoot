@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 public class BookManagerApplication {
 
     public static void main(String[] args) {
-        System.out.println("Project Path: " + PathUtils.getClassLoadRootPath());
+//        System.out.println("Project Path: " + PathUtils.getClassLoadRootPath());
         SpringApplication.run(BookManagerApplication.class, args);
     }
 
