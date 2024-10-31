@@ -1,31 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
 <mapper namespace="com.rabbiter.bms.mapper.UserMapper">
+  <!-- 这个 resultMap 定义了 User 类属性与数据库表列之间的映射关系 -->
   <resultMap id="BaseResultMap" type="com.rabbiter.bms.model.User">
     <id column="userId" jdbcType="INTEGER" property="userid" />
     <result column="userName" jdbcType="VARCHAR" property="username" />
     <result column="userPassword" jdbcType="VARCHAR" property="userpassword" />
     <result column="isAdmin" jdbcType="TINYINT" property="isadmin" />
   </resultMap>
+
+  <!-- 这个 SQL 片段定义了 User 表的基本列，用于复用 -->
   <sql id="Base_Column_List">
     userId, userName, userPassword, isAdmin
   </sql>
+
+  <!-- 根据主键查询用户 -->
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from user
     where userId = #{userid,jdbcType=INTEGER}
   </select>
+
+  <!-- 根据主键删除用户 -->
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from user
     where userId = #{userid,jdbcType=INTEGER}
   </delete>
+
+  <!-- 插入完整的 User 对象，所有字段必须有值 -->
   <insert id="insert" parameterType="com.rabbiter.bms.model.User">
-    insert into user (userId, userName, userPassword, 
-      isAdmin)
-    values (#{userid,jdbcType=INTEGER}, #{username,jdbcType=VARCHAR}, #{userpassword,jdbcType=VARCHAR}, 
-      #{isadmin,jdbcType=TINYINT})
+    insert into user (userId, userName, userPassword, isAdmin)
+    values (#{userid,jdbcType=INTEGER}, #{username,jdbcType=VARCHAR}, #{userpassword,jdbcType=VARCHAR}, #{isadmin,jdbcType=TINYINT})
   </insert>
+
+  <!-- 有选择性地插入 User 对象，只有非空字段会被插入 -->
   <insert id="insertSelective" parameterType="com.rabbiter.bms.model.User">
     insert into user
     <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -57,6 +67,8 @@
       </if>
     </trim>
   </insert>
+
+  <!-- 有选择性地更新 User 对象，只有非空字段会被更新 -->
   <update id="updateByPrimaryKeySelective" parameterType="com.rabbiter.bms.model.User">
     update user
     <set>
@@ -72,22 +84,28 @@
     </set>
     where userId = #{userid,jdbcType=INTEGER}
   </update>
+
+  <!-- 更新完整的 User 对象，所有字段都会被更新 -->
   <update id="updateByPrimaryKey" parameterType="com.rabbiter.bms.model.User">
     update user
     set userName = #{username,jdbcType=VARCHAR},
-      userPassword = #{userpassword,jdbcType=VARCHAR},
-      isAdmin = #{isadmin,jdbcType=TINYINT}
+        userPassword = #{userpassword,jdbcType=VARCHAR},
+        isAdmin = #{isadmin,jdbcType=TINYINT}
     where userId = #{userid,jdbcType=INTEGER}
   </update>
+
+  <!-- 根据用户名、密码和管理员权限查询用户 -->
   <select id="selectByUsernameAndPasswordAndIsAdmin" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from user
     where userName = #{username}
-      and userPassword = #{password}
-      and isAdmin = #{isAdmin}
+    and userPassword = #{password}
+    and isAdmin = #{isAdmin}
     limit 1
   </select>
+
+  <!-- 根据用户名查询用户 -->
   <select id="selectByUsername" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
@@ -95,18 +113,26 @@
     where userName = #{username}
     limit 1
   </select>
+
+  <!-- 分页查询所有用户，从 begin 开始，查询 size 条记录 -->
   <select id="selectAllByLimit" resultMap="BaseResultMap">
     select <include refid="Base_Column_List" />
     from user
     limit #{begin}, #{size}
   </select>
+
+  <!-- 查询用户的总数 -->
   <select id="selectCount" resultType="int">
     select count(*) from user
   </select>
+
+  <!-- 查询所有用户 -->
   <select id="selectAll" resultMap="BaseResultMap">
     select <include refid="Base_Column_List" />
     from user
   </select>
+
+  <!-- 根据搜索条件（用户名）查询用户总数，用于分页 -->
   <select id="selectCountBySearch" resultType="int">
     select count(*) from user
     <where>
@@ -115,6 +141,8 @@
       </if>
     </where>
   </select>
+
+  <!-- 根据搜索条件（用户名）分页查询用户 -->
   <select id="selectBySearch" resultMap="BaseResultMap">
     select userId, userName, userPassword, isAdmin
     from user

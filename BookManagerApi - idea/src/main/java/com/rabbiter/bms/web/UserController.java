@@ -96,11 +96,26 @@ public class UserController {
     }
 
     // 分页查询用户 params: {page, limit, username}
+    // 分页查询用户列表
+    // 前端通过 GET 请求访问 /queryUsersByPage 接口，传入分页参数 page 和 limit
+    // 返回一个包含分页信息和用户列表的 JSON 数据
     @GetMapping(value = "/queryUsersByPage")
-    public Map<String, Object> queryUsersByPage(@RequestParam Map<String, Object> params){
+    public Map<String, Object> queryUsersByPage(@RequestParam Map<String, Object> params) {
+        // 调用 MyUtils 的 parsePageParams 方法，将 page 和 limit 转换为数据库查询的 begin 和 size
+        // 例如，如果 page=2 且 limit=10，则 begin=10，size=10
         MyUtils.parsePageParams(params);
+
+        // 调用 userService 的 getSearchCount 方法，获取符合条件的用户总数
+        // 这是为了返回给前端总记录数，以便前端计算总页数
         int count = userService.getSearchCount(params);
+
+        // 调用 userService 的 searchUsersByPage 方法，查询符合条件的用户数据
+        // 根据 begin 和 size 获取当前页的用户数据
         List<User> users = userService.searchUsersByPage(params);
+
+        // 调用 MyResult 的 getListResultMap 方法封装返回结果
+        // 包含状态码（0）、消息（"success"）、总记录数（count）、当前页用户数据（users）
+        // 最终返回给前端一个 JSON 对象
         return MyResult.getListResultMap(0, "success", count, users);
     }
 
