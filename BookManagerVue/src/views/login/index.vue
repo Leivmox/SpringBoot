@@ -3,12 +3,12 @@
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
       <!-- 标题 -->
       <div class="title-container">
-        <h3 class="title">登录图书管理系统</h3>
+        <h3 class="title">登录</h3>
       </div>
       <!-- 用户名 -->
       <el-form-item prop="username">
         <span class="svg-container">
-          <i class="el-icon-a-052"></i>
+          <!-- <i class="el-icon-a-052"></i> -->
         </span>
         <el-input
           class="yuan"
@@ -24,7 +24,7 @@
       <!-- 密码 -->
       <el-form-item prop="password">
         <span class="svg-container">
-          <i class="el-icon-a-051"></i>
+          <!-- <i class="el-icon-a-051"></i> -->
         </span>
         <el-input
           class="yuan"
@@ -45,7 +45,7 @@
       <!-- 权限 -->
       <el-form-item prop="authority">
         <span class="svg-container">
-          <i class="el-icon-a-062"></i>
+          <!-- <i class="el-icon-a-062"></i> -->
         </span>
         <el-select v-model="loginForm.isadmin" placeholder="请选择" style="width: 418px">
           <el-option :key="0" label="读者" :value="0"></el-option>
@@ -56,7 +56,7 @@
       <!-- 登录按钮 -->
       <div style="height: 40px; margin-bottom: 30px;">
         <el-button :loading="loading" type="primary" style="width: 48%; float: left;" @click.native.prevent="handleLogin">登录</el-button>
-        <el-button :loading="loading" type="success" style="width: 48%; float: right;" @click.native.prevent="handleRegister">注册</el-button>
+        <el-button :loading="loading" type="primary" style="width: 48%; float: right;" @click.native.prevent="handleRegister">注册</el-button>
       </div>
     </el-form>
   </div>
@@ -193,7 +193,7 @@ $cursor: #fff;
 </style>
 
 <style lang="scss" scoped>
-$bg:#2d3a4b;
+$bg:#3b3b3b;
 $dark_gray:#889aa4;
 $light_gray:#eee;
 

@@ -25,7 +25,7 @@
             </i>
             <hr />
 
-            <img :src="require('@/assets/index.jpg')" style="width: 78%" />
+            <!-- <img :src="require('@/assets/index.jpg')" style="width: 78%" /> -->
         </div>
     </div>
 </template>

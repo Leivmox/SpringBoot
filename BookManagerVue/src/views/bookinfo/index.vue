@@ -1,84 +1,59 @@
 <template>
   <div class="app-container">
     <!-- 顶部功能 -->
-    <div class="filter-container" style="margin-bottom: 15px">
+    <div class="filter-container" style="margin-bottom: 15px; display: flex; align-items: center;">
       <!-- 书名输入 -->
-      <el-input v-model="queryParam.bookname" placeholder="书名" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="queryParam.bookname" placeholder="书名" style="width: 200px; margin-right: 10px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <!-- 作者输入 -->
-      <el-input v-model="queryParam.bookauthor" placeholder="作者" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-input v-model="queryParam.bookauthor" placeholder="作者" style="width: 200px; margin-right: 10px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <!-- 类型选择 -->
-      <el-select v-model="queryParam.booktypeid" filterable placeholder="类型" clearable class="filter-item" style="width: 200px;">
+      <el-select v-model="queryParam.booktypeid" filterable placeholder="类型" clearable class="filter-item" style="width: 200px; margin-right: 20px;">
         <el-option v-for="item in typeData" :key="item.booktypeid" :label="item.booktypename" :value="item.booktypeid" />
       </el-select>
-      <!-- 一些按钮 -->
-      <br>
-      <br>
-      <el-button v-waves style="font-size: 20px;" class="filter-item" type="primary" icon="el-icon-a-042" @click="handleFilter">
+      <div></div>
+            <!-- 一些按钮 -->
+      <el-button v-waves class="filter-item" style="font-size: 20px" type="primary" @click="handleFilter">
         搜索
       </el-button>
-      <el-button v-waves style="font-size: 20px;" class="filter-item" type="primary" icon="el-icon-a-041" @click="handleShowAll">
-        显示全部
+      <el-button v-waves class="filter-item" style="font-size: 20px" type="primary" @click="handleShowAll">
+        取消
       </el-button>
-      <el-button v-permission="['admin']" class="filter-item" style="margin-left: 10px;font-size: 20px;" type="primary" icon="el-icon-a-07" @click="handleCreate">
-        添加图书
-      </el-button>
-      <el-button v-permission="['admin']" class="filter-item" style="margin-left: 10px;font-size: 20px;" type="danger" icon="el-icon-a-022" @click="handleDeleteSome">
-        批量删除
+      <el-button class="filter-item" style="margin-left: 10px;font-size: 20px" type="primary" @click="handleCreate">
+        添加
       </el-button>
     </div>
 
     <!--弹出框-->
     <el-dialog :title="formTitle" :visible.sync="dialogFormVisible" width="40%">
-      <el-row>
-        <el-col :span="16">
-          <!--普通表单-->
-          <el-form :model="form" :rules="rules" ref="ruleForm" label-width="80px">
+      <el-form :model="form" :rules="rules" ref="ruleForm" label-width="80px">
 
-            <el-form-item label="图书名称" prop="bookname">
-              <el-input v-model="form.bookname"></el-input>
-            </el-form-item>
+        <el-form-item label="图书名称" prop="bookname">
+          <el-input v-model="form.bookname"></el-input>
+        </el-form-item>
 
-            <el-form-item label="作者" prop="bookauthor">
-              <el-input v-model="form.bookauthor"></el-input>
-            </el-form-item>
+        <el-form-item label="作者" prop="bookauthor">
+          <el-input v-model="form.bookauthor"></el-input>
+        </el-form-item>
 
-            <el-form-item label="价格" prop="bookprice">
-              <el-input v-model="form.bookprice"></el-input>
-            </el-form-item>
+        <el-form-item label="价格" prop="bookprice">
+          <el-input v-model="form.bookprice"></el-input>
+        </el-form-item>
 
-            <el-form-item label="图书类型" prop="booktypeid">
-              <el-select v-model="form.booktypeid" placeholder="请选择类型">
-                <el-option
-                    v-for="item in typeData"
-                    :key="item.booktypeid"
-                    :label="item.booktypename"
-                    :value="item.booktypeid">
-                </el-option>
-              </el-select>
-            </el-form-item>
+        <el-form-item label="图书类型" prop="booktypeid">
+          <el-select v-model="form.booktypeid" placeholder="请选择类型">
+            <el-option
+                v-for="item in typeData"
+                :key="item.booktypeid"
+                :label="item.booktypename"
+                :value="item.booktypeid">
+            </el-option>
+          </el-select>
+        </el-form-item>
 
-            <el-form-item label="书籍描述" prop="bookdesc">
-              <el-input type="textarea" v-model="form.bookdesc"></el-input>
-            </el-form-item>
-          </el-form>
-        </el-col>
-        <el-col :span="8">
-          <div align="center">
-            <h3>点击下方图片上传封面</h3>
-            <!--上传图片-->
-            <el-upload
-                class="avatar-uploader"
-                action="http://localhost:9111/BookManager/update/updateImg"
-                :show-file-list="false"
-                :on-success="handleAvatarSuccess"
-                :before-upload="beforeAvatarUpload">
-              <img v-if="form.bookimg" :src="$store.state.settings.baseApi + form.bookimg" class="avatar" alt="封面无法显示">
-              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-            </el-upload>
-          </div>
-
-        </el-col>
-      </el-row>
+        <el-form-item label="书籍描述" prop="bookdesc">
+          <el-input type="textarea" v-model="form.bookdesc"></el-input>
+        </el-form-item>
+      </el-form>
 
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
@@ -90,15 +65,15 @@
     <el-dialog title="选择用户" :visible.sync="dialogFormVisible2" width="400px">
       <el-form :model="form2">
         <el-form-item label="用户名" prop="userid" label-width="80px">
-              <el-select v-model="form2.booktypeid" placeholder="请选择用户">
-                <el-option
-                    v-for="item in userData"
-                    :key="item.userid"
-                    :label="item.username"
-                    :value="item.userid">
-                </el-option>
-              </el-select>
-            </el-form-item>
+          <el-select v-model="form2.booktypeid" placeholder="请选择用户">
+            <el-option
+                v-for="item in userData"
+                :key="item.userid"
+                :label="item.username"
+                :value="item.userid">
+            </el-option>
+          </el-select>
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible2 = false">取 消</el-button>
@@ -114,22 +89,9 @@
         style="width: 100%">
       <el-table-column
           fixed
-          type="selection"
-          width="55">
-      </el-table-column>
-      <el-table-column
-          fixed
           prop="bookid"
           label="序号"
           width="100">
-      </el-table-column>
-      <el-table-column
-          v-if="roleIsAdmin === false"
-          label="图书封面"
-          width="155">
-          <template slot-scope="scope">
-            <el-image :src="$store.state.settings.baseApi + scope.row.bookimg" style="width: 130px; height: 180px"></el-image>
-          </template>
       </el-table-column>
       <el-table-column
           prop="bookname"
@@ -157,7 +119,7 @@
       <el-table-column
           prop="bookdesc"
           label="图书描述"
-          min-width="300"
+          min-width="250"
           show-overflow-tooltip>
       </el-table-column>
       <el-table-column
@@ -171,11 +133,11 @@
       <el-table-column
           fixed="right"
           label="操作"
-          :width="roleIsAdmin?'370px':'160px'">
+          :width="roleIsAdmin ? '370px' : '160px'">
         <template slot-scope="scope">
-          <el-button v-permission="['admin']" @click="handleUpdate(scope.row)" type="primary" icon="iconfont icon-r-edit" style="font-size: 16px;"> 编辑</el-button>
-          <el-button v-permission="['admin']" @click="handleDelete(scope.row,scope.$index)" type="danger" icon="iconfont icon-r-delete" style="font-size: 16px;"> 删除</el-button>
-          <el-button @click="handleBorrow(scope.row)" type="success" icon="iconfont icon-r-shield" style="font-size: 16px;"> 借阅图书</el-button>
+          <el-button v-permission="['admin']" @click="handleUpdate(scope.row)" type="primary" style="font-size: 16px;"> 编辑</el-button>
+          <el-button v-permission="['admin']" @click="handleDelete(scope.row, scope.$index)" type="danger" style="font-size: 16px;"> 删除</el-button>
+          <el-button @click="handleBorrow(scope.row)" type="success" style="font-size: 16px;"> 借阅图书</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -283,32 +245,6 @@ export default {
       })
     },
 
-    // 图片上传成功监听
-    handleAvatarSuccess(res, file) {
-      console.log(res)
-      console.log(file)
-      if(res.code === 0) {
-        this.$message.success('上传成功');
-        this.form.bookimg = res.data
-      } else {
-        this.$message.error('上传失败，请联系管理员');
-      }
-    },
-
-    // 图片上传之前监听
-    beforeAvatarUpload(file) {
-      const isJPG = file.type === 'image/jpeg';
-      const isLt2M = file.size / 1024 / 1024 < 2;
-
-      if (!isJPG) {
-        this.$message.error('上传封面图片只能是 JPG 格式!');
-      }
-      if (!isLt2M) {
-        this.$message.error('上传封面图片大小不能超过 2MB!');
-      }
-      return isJPG && isLt2M;
-    },
-
     // 点击添加记录
     handleCreate() {
       // 从服务器获取所有的图书类型
@@ -326,8 +262,7 @@ export default {
         bookprice: '',
         booktypeid: 1,
         bookdesc: '',
-        isborrowed: 0,
-        bookimg: ''
+        isborrowed: 0
       }
       // 显示表单框
       this.dialogFormVisible = true
@@ -350,8 +285,7 @@ export default {
         bookprice: row.bookprice,
         booktypeid: row.booktypeid,
         bookdesc: row.bookdesc,
-        isborrowed: row.isborrowed,
-        bookimg: row.bookimg
+        isborrowed: row.isborrowed
       }
       // 显示表单框
       this.dialogFormVisible = true
@@ -450,35 +384,7 @@ export default {
           }
         })
       })
-    },
-
-    // 删除一些
-    handleDeleteSome() {
-      this.$confirm('确定要删除这些记录吗?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        // 获取选中的对象数组
-        const items = this.$refs.multipleTable.selection
-        deleteBookInfos(items).then(res => {
-          if(res > 0) {
-            this.$message.success('删除' + res + '条记录成功')
-            if(this.tableData.length === res) {  //如果本页内容全部删光了
-              //当前页为上一页
-              if(this.queryParam.page !== 0) {
-                this.queryParam.page = this.queryParam.page - 1
-              }
-            }
-            // 重载当前页
-            this.handleCurrentChange(this.queryParam.page)
-          } else {
-            this.$message.error('删除记录失败')
-          }
-        })
-      })
-    },
-
+    }
   },
   data() {
     return {
@@ -511,8 +417,7 @@ export default {
         bookprice: 0,
         booktypeid: 1,
         bookdesc: '',
-        isborrowed: 0,
-        bookimg: ''
+        isborrowed: 0
       },
       form2: {
         userid: 1,
@@ -537,7 +442,7 @@ export default {
         isborrowed: [
           { required: true, message: '请选择状态', trigger: 'blur' }
         ]
-      },
+      }
     }
   },
   computed: {
@@ -574,10 +479,5 @@ export default {
     height: 178px;
     line-height: 178px;
     text-align: center;
-  }
-  .avatar {
-    width: 150px;
-    height: 200px;
-    display: block;
   }
 </style>

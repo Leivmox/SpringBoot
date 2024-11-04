@@ -1,20 +1,17 @@
 <template>
   <div class="navbar">
-    <hamburger :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
+    <!-- <hamburger :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" /> -->
+<font class="breadcrumb-container"  style="font-size: 32px;">
+  <b>图书管理系统</b>
+</font>
 
-    <breadcrumb class="breadcrumb-container" />
-    
+    <!-- <breadcrumb class="breadcrumb-container" /> -->
     <div class="right-menu">
-      <el-dropdown class="avatar-container" trigger="click">
-        
-        <div class="avatar-wrapper">
-          <img :src="avatar" class="user-avatar" style="border: 1px solid lightgrey;">
-          <span class="user-name"> {{name}} </span>
-          <i class="el-icon-caret-bottom" />
-        </div>
-        <el-dropdown-menu slot="dropdown" class="user-dropdown" style="padding-bottom: 10px;">
+      <el-dropdown class="user-dropdown" trigger="click">
+        <span class="user-name">{{ name }}</span>
+        <i class="el-icon-caret-bottom" />
+        <el-dropdown-menu slot="dropdown" class="user-dropdown-menu" style="padding-bottom: 10px;">
           <router-link to="/">
-            
             <el-dropdown-item>
               首页
             </el-dropdown-item>
@@ -41,7 +38,6 @@ export default {
   computed: {
     ...mapGetters([
       'sidebar',
-      'avatar',
       'name'
     ])
   },
@@ -51,7 +47,6 @@ export default {
     },
     async logout() {
       await this.$store.dispatch('user/logout')
-      // this.$router.push(`/login?redirect=${this.$route.fullPath}`)
       this.$router.push(`/login`)
     }
   }
@@ -75,7 +70,7 @@ export default {
     -webkit-tap-highlight-color:transparent;
 
     &:hover {
-      background: rgba(0, 0, 0, .025)
+      background: rgba(0, 0, 0, .025);
     }
   }
 
@@ -94,50 +89,20 @@ export default {
       outline: none;
     }
 
-    .right-menu-item {
-      display: inline-block;
-      padding: 0 8px;
-      height: 100%;
-      font-size: 18px;
-      color: #5a5e66;
-      vertical-align: text-bottom;
-
-      &.hover-effect {
-        cursor: pointer;
-        transition: background .3s;
-
-        &:hover {
-          background: rgba(0, 0, 0, .025)
-        }
-      }
-    }
-
-    .avatar-container {
+    .user-dropdown {
       margin-right: 30px;
+      display: flex;
+      align-items: center;
 
-      .avatar-wrapper {
-        margin-top: 5px;
-        position: relative;
+      .user-name {
+        font-size: 22px;
+        cursor: pointer;
+        margin-right: 5px;
+      }
 
-        .user-avatar {
-          cursor: pointer;
-          width: 50px;
-          height: 50px;
-          border-radius: 5px;
-        }
-
-        .user-name {
-          cursor: pointer;
-          font-size: 22px;
-        }
-
-        .el-icon-caret-bottom {
-          cursor: pointer;
-          position: absolute;
-          right: -20px;
-          top: 35px;
-          font-size: 12px;
-        }
+      .el-icon-caret-bottom {
+        cursor: pointer;
+        font-size: 12px;
       }
     }
   }

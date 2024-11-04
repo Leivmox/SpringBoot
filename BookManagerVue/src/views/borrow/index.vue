@@ -8,28 +8,20 @@
       <el-input v-model="queryParam.bookname" placeholder="图书名" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <br><br>
       <!-- 一些按钮 -->
-      <el-button v-waves class="filter-item" type="primary" style="font-size: 20px;" icon="el-icon-a-042" @click="handleFilter">
+      <el-button v-waves class="filter-item" type="primary" style="font-size: 20px;" @click="handleFilter">
         搜索
       </el-button>
-      <el-button v-waves class="filter-item" type="primary" style="font-size: 20px;" icon="el-icon-a-041" @click="handleShowAll">
-        显示全部
-      </el-button>
-      <el-button v-permission="['admin']" class="filter-item" style="margin-left: 10px;font-size: 20px;" type="danger" icon="el-icon-a-022" @click="handleDeleteSome">
-        批量删除
+      <el-button v-waves class="filter-item" type="primary" style="font-size: 20px;" @click="handleShowAll">
+        取消
       </el-button>
     </div>
 
-    <!--数据表格-->
+    <!-- 数据表格 -->
     <el-table
         ref="multipleTable"
         :data="tableData"
         border
         style="width: 100%">
-      <el-table-column
-          fixed
-          type="selection"
-          width="55">
-      </el-table-column>
       <el-table-column
           fixed
           prop="borrowid"
@@ -60,15 +52,15 @@
       <el-table-column
           fixed="right"
           label="操作"
-          :width="roleIsAdmin?'260px':'160px'">
+          :width="roleIsAdmin?'250px':'100px'">
         <template slot-scope="scope">
-          <el-button v-permission="['admin']" @click="handleDelete(scope.row,scope.$index)" type="danger" icon="iconfont icon-r-delete" style="font-size: 16px;"> 删除</el-button>
-          <el-button v-if="scope.row.returntimestr === null || scope.row.returntimestr === ''" @click="handleReturn(scope.row,scope.$index)" type="success" icon="iconfont icon-r-refresh" style="font-size: 16px;"> 归还图书</el-button>
+          <el-button v-permission="['admin']" @click="handleDelete(scope.row, scope.$index)" type="danger" style="font-size: 16px;"> 删除</el-button>
+          <el-button v-if="scope.row.returntimestr === null || scope.row.returntimestr === ''" @click="handleReturn(scope.row, scope.$index)" type="success" style="font-size: 16px;"> 归还图书</el-button>
         </template>
       </el-table-column>
     </el-table>
 
-    <!--分页条-->
+    <!-- 分页条 -->
     <el-pagination
         background
         @size-change="handleSizeChange"
@@ -87,16 +79,15 @@
 import { mapGetters } from 'vuex'
 import permission from '@/directive/permission/index.js' // 权限判断指令
 import waves from '@/directive/waves' // waves directive
-import { getCount,queryBorrows,queryBorrowsByPage,addBorrow,deleteBorrow,deleteBorrows,updateBorrow,returnBook } from '@/api/borrow'
+import { queryBorrowsByPage, deleteBorrow, returnBook } from '@/api/borrow'
 
 export default {
   name: 'Bookinfo',
   directives: { waves, permission },
-  // 创建后
   created() {
     // 从服务器获取数据表格第一页的信息
     queryBorrowsByPage(this.queryParam).then(res => {
-      console.log('首页数据获取成功',res)
+      console.log('首页数据获取成功', res)
       this.tableData = res.data
       this.recordTotal = res.count
     })
@@ -107,9 +98,9 @@ export default {
       const params = this.queryParam
       params.limit = curSize
       queryBorrowsByPage(params).then(res => {
-            console.log('分页数据获取成功',res)
-            this.tableData = res.data
-            this.recordTotal = res.count
+        console.log('分页数据获取成功', res)
+        this.tableData = res.data
+        this.recordTotal = res.count
       })
     },
 
@@ -118,9 +109,9 @@ export default {
       const params = this.queryParam
       params.page = curPage
       queryBorrowsByPage(params).then(res => {
-            console.log('分页数据获取成功',res)
-            this.tableData = res.data
-            this.recordTotal = res.count
+        console.log('分页数据获取成功', res)
+        this.tableData = res.data
+        this.recordTotal = res.count
       })
     },
 
@@ -128,7 +119,7 @@ export default {
     handleFilter() {
       this.queryParam.page = 1
       queryBorrowsByPage(this.queryParam).then(res => {
-        if(res.code === 0) {
+        if (res.code === 0) {
           this.tableData = res.data
           this.recordTotal = res.count
         }
@@ -141,7 +132,7 @@ export default {
       this.queryParam.username = null
       this.queryParam.bookname = null
       queryBorrowsByPage(this.queryParam).then(res => {
-        if(res.code === 0) {
+        if (res.code === 0) {
           this.tableData = res.data
           this.recordTotal = res.count
         }
@@ -156,43 +147,16 @@ export default {
         type: 'warning'
       }).then(() => {
         deleteBorrow(row).then(res => {
-          if(res === 1) {
+          if (res === 1) {
             this.$message.success('删除记录成功')
             this.tableData.splice(index, 1)
             // 如果删完了，获取上一页
-            if(this.tableData.length === 0) {
+            if (this.tableData.length === 0) {
               this.queryParam.page = this.queryParam.page - 1
               this.handleCurrentChange(this.queryParam.page)
             }
           } else {
             this.$message.error('存在未完成的借阅信息，删除失败')
-          }
-        })
-      })
-    },
-
-    // 删除一些
-    handleDeleteSome() {
-      this.$confirm('确定要删除这些记录吗?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        // 获取选中的对象数组
-        const items = this.$refs.multipleTable.selection
-        deleteBorrows(items).then(res => {
-          if(res > 0) {
-            this.$message.success('删除' + res + '条记录成功')
-            if(this.tableData.length === res) {  //如果本页内容全部删光了
-              //当前页为上一页
-              if(this.queryParam.page !== 0) {
-                this.queryParam.page = this.queryParam.page - 1
-              }
-            }
-            // 重载当前页
-            this.handleCurrentChange(this.queryParam.page)
-          } else {
-            this.$message.error('删除记录失败')
           }
         })
       })
@@ -206,10 +170,10 @@ export default {
         type: 'warning'
       }).then(() => {
         returnBook(row.borrowid, row.bookid).then(res => {
-          if(res === 1) {
+          if (res === 1) {
             this.$message.success('还书成功')
             this.handleCurrentChange(this.queryParam.page)
-          } else if(res === 0){
+          } else if (res === 0) {
             this.$message.error('该图书已经是归还的状态')
           } else {
             this.$message.error('还书失败')
@@ -217,25 +181,6 @@ export default {
         })
       })
     },
-
-    // 批量还书
-    // handleReturn(row, index) {
-    //   this.$confirm('确定要还书吗?', '提示', {
-    //     confirmButtonText: '确定',
-    //     cancelButtonText: '取消',
-    //     type: 'warning'
-    //   }).then(() => {
-    //     returnBook(row.borrowid, row.bookid).then(res => {
-    //       if(res === 1) {
-    //         this.$message.success('还书成功')
-    //         this.handleCurrentChange(this.queryParam.page)
-    //       } else {
-    //         this.$message.error('还书失败')
-    //       }
-    //     })
-    //   })
-    // },
-
   },
   data() {
     return {
@@ -255,17 +200,15 @@ export default {
   },
   computed: {
     // 获得user信息
-    ...mapGetters(['id','name','roles']),
+    ...mapGetters(['id', 'name', 'roles']),
     roleIsAdmin() {
-      if(this.roles[0] === 'admin') return true
-      else return false
+      return this.roles[0] === 'admin'
     }
   },
   watch: {
     'queryParam.userid': {
       immediate: true,
       handler() {
-        console.log("我被触发了")
         if (this.roleIsAdmin) {
           this.queryParam.userid = null
         } else {
@@ -275,8 +218,8 @@ export default {
     }
   }
 }
-
 </script>
+
 
 <style scoped>
   .avatar-uploader .el-upload {

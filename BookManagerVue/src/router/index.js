@@ -56,10 +56,33 @@ export const constantRoutes = [
     children: [{
       path: 'dashboard',
       name: 'Dashboard',
-      component: () => import('@/views/dashboard/index'),
-      meta: { title: '首页', icon: 'el-icon-a-011' }
+      component: () => import('@/views/bookinfo/index'),
+      // meta: { title: '首页', icon: 'el-icon-a-011' }
+      meta: { title: '首页'}
     }]
-  }
+  },
+
+
+  // {
+  //   path: '/bookmanage',
+  //   component: Layout,
+  //   redirect: '/dashboard',
+  //   children: [{
+  //     path: 'dashboard',
+  //     name: 'Dashboard',
+  //     component: () => import('@/views/booktype/index'),
+  //     // meta: { title: '首页', icon: 'el-icon-a-011' }
+  //     meta: { 
+  //         title: '图书信息管理',
+  //         // icon: 'el-icon-a-061',
+  //         roles: ['admin'],
+  //         noCache: true 
+  //     }
+  //   }]
+  // },
+
+
+  
 ]
 
 /**
@@ -76,7 +99,7 @@ export const asyncRoutes = [
     alwaysShow: true,
     meta: {
       title: '图书管理',
-      icon: 'el-icon-a-041'
+      // icon: 'el-icon-a-041'
     },
     children: [
       {
@@ -85,7 +108,7 @@ export const asyncRoutes = [
         component: () => import('@/views/bookinfo/index'),
         meta: {
           title: '图书信息管理',
-          icon: 'el-icon-a-061',
+          // icon: 'el-icon-a-061',
           roles: ['admin', 'reader'],
           noCache: true 
         }
@@ -96,7 +119,7 @@ export const asyncRoutes = [
         component: () => import('@/views/booktype/index'),
         meta: {
           title: '图书类型管理',
-          icon: 'el-icon-a-02',
+          // icon: 'el-icon-a-02',
           roles: ['admin'],
           noCache: true 
         }
@@ -107,7 +130,7 @@ export const asyncRoutes = [
         component: () => import('@/views/borrow/index'),
         meta: {
           title: '借阅信息管理',
-          icon: 'el-icon-a-021',
+          // icon: 'el-icon-a-021',
           roles: ['admin', 'reader'],
           noCache: true 
         }
@@ -123,7 +146,7 @@ export const asyncRoutes = [
     alwaysShow: true,
     meta: {
       title: '其他管理',
-      icon: 'el-icon-a-031' 
+      // icon: 'el-icon-a-031' 
     },
     children: [
       {
@@ -132,7 +155,7 @@ export const asyncRoutes = [
         component: () => import('@/views/user/index'),
         meta: {
           title: '用户管理',
-          icon: 'el-icon-a-01',
+          // icon: 'el-icon-a-01',
           roles: ['admin'],
           noCache: true 
         }
@@ -143,7 +166,7 @@ export const asyncRoutes = [
         component: () => import('@/views/password/index'),
         meta: {
           title: '修改密码',
-          icon: 'el-icon-a-051',
+          // icon: 'el-icon-a-051',
           roles: ['admin', 'reader'],
           noCache: true 
         }

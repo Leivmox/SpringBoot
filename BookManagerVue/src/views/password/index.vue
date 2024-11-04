@@ -31,7 +31,7 @@
         />
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="onSubmit" icon="el-icon-a-051" style="font-size: 20px;">更改密码</el-button>
+        <el-button type="primary" @click="onSubmit"  style="font-size: 20px;">更改密码</el-button>
       </el-form-item>
     </el-form>
   </div>

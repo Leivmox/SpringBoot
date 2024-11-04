@@ -10,12 +10,12 @@
         >
             <!-- 标题 -->
             <div class="title-container">
-                <h3 class="title">注册新账号</h3>
+                <h3 class="title">注册</h3>
             </div>
             <!-- 用户名 -->
             <el-form-item prop="username">
                 <span class="svg-container">
-                    <i class="el-icon-a-052"></i>
+                    <!-- <i class="el-icon-a-052"></i> -->
                 </span>
                 <el-input
                     ref="username"
@@ -30,7 +30,7 @@
             <!-- 密码 -->
             <el-form-item prop="password">
                 <span class="svg-container">
-                    <i class="el-icon-a-051"></i>
+                    <!-- <i class="el-icon-a-051"></i> -->
                 </span>
                 <el-input
                     ref="password"
@@ -45,7 +45,7 @@
             <!-- 确认密码 -->
             <el-form-item prop="repeat">
                 <span class="svg-container">
-                    <i class="el-icon-a-051"></i>
+                    <!-- <i class="el-icon-a-051"></i> -->
                 </span>
                 <el-input
                     ref="repeat"
@@ -70,10 +70,10 @@
                 >
                 <el-button
                     :loading="loading"
-                    type="success"
+                    type="primary"
                     style="width: 48%; float: right"
                     @click.native.prevent="handleBack"
-                    >返回登录</el-button
+                    >返回</el-button
                 >
             </div>
         </el-form>
@@ -200,7 +200,7 @@ $cursor: #fff;
 </style>
 
 <style lang="scss" scoped>
-$bg: #2d3a4b;
+$bg: #3b3b3b;
 $dark_gray: #889aa4;
 $light_gray: #eee;
 

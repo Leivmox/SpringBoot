@@ -6,17 +6,14 @@
       <el-input v-model="queryParam.username" placeholder="用户名" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <br><br>
       <!-- 一些按钮 -->
-      <el-button v-waves class="filter-item" type="primary" style="font-size: 20px;" icon="el-icon-a-042" @click="handleFilter">
+      <el-button v-waves class="filter-item" type="primary" style="font-size: 20px;"  @click="handleFilter">
         搜索
       </el-button>
-      <el-button v-waves class="filter-item" type="primary" style="font-size: 20px;" icon="el-icon-a-041" @click="handleShowAll">
-        显示全部
+      <el-button v-waves class="filter-item" type="primary" style="font-size: 20px;"  @click="handleShowAll">
+        取消
       </el-button>
-      <el-button class="filter-item" style="margin-left: 10px;font-size: 20px;" type="primary" icon="el-icon-a-07" @click="handleCreate">
-        添加用户
-      </el-button>
-      <el-button class="filter-item" style="margin-left: 10px;font-size: 20px;" type="danger" icon="el-icon-a-022" @click="handleDeleteSome">
-        批量删除
+      <el-button class="filter-item" style="margin-left: 10px;font-size: 20px;" type="primary"  @click="handleCreate">
+        添加
       </el-button>
     </div>
 
@@ -53,11 +50,6 @@
         style="width: 100%">
       <el-table-column
           fixed
-          type="selection"
-          width="55">
-      </el-table-column>
-      <el-table-column
-          fixed
           prop="userid"
           label="序号"
           width="100">
@@ -85,8 +77,8 @@
           label="操作"
           width="240">
         <template slot-scope="scope">
-          <el-button @click="handleUpdate(scope.row)" type="primary" icon="iconfont icon-r-edit" style="font-size: 16px;"> 编辑</el-button>
-          <el-button @click="handleDelete(scope.row,scope.$index)" type="danger" icon="iconfont icon-r-delete" style="font-size: 16px;"> 删除</el-button>
+          <el-button @click="handleUpdate(scope.row)" type="primary"  style="font-size: 16px;"> 编辑</el-button>
+          <el-button @click="handleDelete(scope.row,scope.$index)" type="danger"  style="font-size: 16px;"> 删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -109,104 +101,87 @@
 <script>
 import { mapGetters } from 'vuex'
 import waves from '@/directive/waves' // waves directive
-import { getCount,queryUsers,queryUsersByPage,addUser,deleteUser,deleteUsers,updateUser }
-from '@/api/user'
+import { getCount, queryUsersByPage, addUser, deleteUser, updateUser } from '@/api/user'
 
 export default {
   name: 'Bookinfo',
   directives: { waves },
-  // 创建后
   created() {
-    // 从服务器获取数据表格第一页的信息
     queryUsersByPage(this.queryParam).then(res => {
-      console.log('首页数据获取成功',res)
+      console.log('首页数据获取成功', res)
       this.tableData = res.data
       this.recordTotal = res.count
     })
   },
   methods: {
-    // 分页大小改变监听
     handleSizeChange(curSize) {
       const params = this.queryParam
       params.limit = curSize
       queryUsersByPage(params).then(res => {
-            console.log('分页数据获取成功',res)
-            this.tableData = res.data
-            this.recordTotal = res.count
+        console.log('分页数据获取成功', res)
+        this.tableData = res.data
+        this.recordTotal = res.count
       })
     },
 
-    // 点击分页监听方法
     handleCurrentChange(curPage) {
       const params = this.queryParam
       params.page = curPage
       queryUsersByPage(params).then(res => {
-            console.log('分页数据获取成功',res)
-            this.tableData = res.data
-            this.recordTotal = res.count
+        console.log('分页数据获取成功', res)
+        this.tableData = res.data
+        this.recordTotal = res.count
       })
     },
 
-    // 搜索
     handleFilter() {
       this.queryParam.page = 1
       queryUsersByPage(this.queryParam).then(res => {
-        if(res.code === 0) {
+        if (res.code === 0) {
           this.tableData = res.data
           this.recordTotal = res.count
         }
       })
     },
 
-    // 显示全部
     handleShowAll() {
       this.queryParam.page = 1
       this.queryParam.username = null
       queryUsersByPage(this.queryParam).then(res => {
-        if(res.code === 0) {
+        if (res.code === 0) {
           this.tableData = res.data
           this.recordTotal = res.count
         }
       })
     },
 
-    // 点击添加记录
     handleCreate() {
-      // 表单是添加状态
       this.formType = 0
-      // 将空数据置入form
       this.form = {
         userid: null,
         username: '',
         userpassword: '',
         isadmin: 1,
       }
-      // 显示表单框
       this.dialogFormVisible = true
     },
 
-    // 点击编辑记录
     handleUpdate(row) {
-      // 表单是编辑状态
       this.formType = 1
-      // 将行数据置入form
       this.form = {
         userid: row.userid,
         username: row.username,
         userpassword: row.userpassword,
         isadmin: row.isadmin,
       }
-      // 显示表单框
       this.dialogFormVisible = true
     },
 
-    // 添加和更新的提交表单
     submitForm() {
-      if (this.formType === 0) {  // 添加记录
+      if (this.formType === 0) {
         addUser(this.form).then(res => {
-          if(res === 1) {
+          if (res === 1) {
             this.$message.success('添加记录成功')
-            // 跳转到末尾
             getCount().then(res => {
               this.recordTotal = res
               this.queryParam.page = Math.ceil(this.recordTotal / this.queryParam.limit)
@@ -215,22 +190,21 @@ export default {
           } else {
             this.$message.error('添加记录失败')
           }
-          this.dialogFormVisible = false  // 关闭对话框
+          this.dialogFormVisible = false
         })
-      } else if(this.formType === 1) {  //更新记录
+      } else if (this.formType === 1) {
         updateUser(this.form).then(res => {
-          if(res === 1 || res === 1) {
+          if (res === 1) {
             this.$message.success('更新记录成功')
             this.handleCurrentChange(this.queryParam.page)
           } else {
             this.$message.error('更新记录失败')
           }
-          this.dialogFormVisible = false  // 关闭对话框
+          this.dialogFormVisible = false
         })
       }
     },
 
-    // 删除记录
     handleDelete(row, index) {
       this.$confirm('确定要删除该条记录吗?', '提示', {
         confirmButtonText: '确定',
@@ -238,17 +212,16 @@ export default {
         type: 'warning'
       }).then(() => {
         deleteUser(row).then(res => {
-          if(res === 1) {
+          if (res === 1) {
             this.$message.success('删除记录成功')
             this.tableData.splice(index, 1)
-            // 如果删完了，获取上一页
-            if(this.tableData.length === 0) {
+            if (this.tableData.length === 0) {
               this.queryParam.page = this.queryParam.page - 1
               this.handleCurrentChange(this.queryParam.page)
             }
-          } else if(res === -1) {
+          } else if (res === -1) {
             this.$message.error('待删除的用户存在图书借阅信息，请先删除该用户所有的借阅信息后再尝试删除用户')
-          } else if(res === -2) {
+          } else if (res === -2) {
             this.$message.error('admin账户无法删除')
           } else {
             this.$message.error('删除记录失败')
@@ -256,52 +229,18 @@ export default {
         })
       })
     },
-
-    // 删除一些
-    handleDeleteSome() {
-      this.$confirm('确定要删除这些记录吗?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        // 获取选中的对象数组
-        const items = this.$refs.multipleTable.selection
-        deleteUsers(items).then(res => {
-          if(res > 0) {
-            this.$message.success('删除' + res + '条记录成功')
-            if(this.tableData.length === res) {  //如果本页内容全部删光了
-              //当前页为上一页
-              if(this.queryParam.page !== 0) {
-                this.queryParam.page = this.queryParam.page - 1
-              }
-            }
-            // 重载当前页
-            this.handleCurrentChange(this.queryParam.page)
-          } else {
-            this.$message.error('删除记录失败')
-          }
-        })
-      })
-    },
-
   },
   data() {
     return {
-      // 表格数据
       tableData: [],
-      // 记录总数
       recordTotal: 0,
-      // 查询参数
       queryParam: {
         page: 1,
         limit: 10,
         username: null
       },
-      // 对话框表单显示
       dialogFormVisible: false,
-      // 表单类型（添加数据:0,修改数据:1）
       formType: 0,
-      // 表单数据
       form: {
         userid: null,
         username: '',
@@ -319,15 +258,12 @@ export default {
     }
   },
   computed: {
-    // 获得user信息
-    ...mapGetters(['id','name','roles']),
-    // 通过表单类型计算表单标题
+    ...mapGetters(['id', 'name', 'roles']),
     formTitle() {
       return this.formType === 0 ? '添加记录' : '修改记录'
     }
   }
 }
-
 </script>
 
 <style scoped>
